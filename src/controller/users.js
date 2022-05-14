@@ -1,4 +1,5 @@
 const createError = require('http-errors')
+const errMessage = createError.InternalServerError()
 const bcrypt = require('bcryptjs')
 const { v4: uuidv4 } = require('uuid')
 const { checkEmail, addDataRegister } = require('../models/users')
@@ -21,7 +22,7 @@ const register = async (req, res, next) => {
       password: hashPassword
     }
     await addDataRegister(dataRegister)
-    commonHelper.response(res, null, 201, 'User berhasil ditambahkan')
+    commonHelper.response(res, dataRegister, 201, 'User berhasil ditambahkan')
   } catch (error) {
     console.log(error)
     next(createError('Internal Server Error'))
@@ -42,7 +43,8 @@ const login = async (req, res, next) => {
     delete user.password
 
     const payload = {
-      email: user.email
+      email: user.email,
+      role: user.role || user
     }
 
     user.token = generateToken(payload)
@@ -53,4 +55,16 @@ const login = async (req, res, next) => {
   }
 }
 
-module.exports = { register, login }
+const profile = async (req, res, next) => {
+  try {
+    const email = req.user.email
+    const { rows: [user] } = await checkEmail(email)
+    delete user.password
+    commonHelper.response(res, user, 200, 'Berhasil mengambil data')
+  } catch (error) {
+    console.log(error)
+    next(errMessage)
+  }
+}
+
+module.exports = { register, login, profile }
