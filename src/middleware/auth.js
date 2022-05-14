@@ -7,6 +7,7 @@ const protect = (req, res, next) => {
       token = req.headers.authorization.split(' ')[1]
       const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
       console.log(decoded)
+      req.user = decoded
       next()
     } else {
       next(createError(400, 'Server need token'))
@@ -23,4 +24,10 @@ const protect = (req, res, next) => {
   }
 }
 
-module.exports = { protect }
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== 1) {
+    return next(createError(400, 'Admin Only'))
+  }
+  next()
+}
+module.exports = { protect, isAdmin }

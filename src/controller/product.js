@@ -10,6 +10,7 @@ const productsController = {
     try {
       if (!id) {
         const query = req.query
+        let queryResult
         const key = req.query.search
         const sortby = req.query.sortby
         const sort = req.query.sort
@@ -21,10 +22,10 @@ const productsController = {
         // console.log(query)
         for (const keyObject in query) {
           if (keyObject === 'search') {
-            const queryResult = await modelsProduct.search(key, limit, offset)
+            queryResult = await modelsProduct.search(key, limit, offset)
             result = queryResult.rows
           } else if (keyObject === 'sort' || keyObject === 'sortby') {
-            const queryResult = await modelsProduct.sort(sortby, sort, limit, offset)
+            queryResult = await modelsProduct.sort(sortby, sort, limit, offset)
             result = queryResult.rows
           }
         }
@@ -55,12 +56,14 @@ const productsController = {
     }
   },
   addData: (req, res, next) => {
+    console.log(req.file.filename)
     const { name, brand, size, color, condition, stock, price, idCategory } = req.body
     const data = {
       name,
       brand,
       size,
       color,
+      photo: req.file.filename,
       condition,
       stock,
       price,

@@ -1,14 +1,15 @@
 const createError = require('http-errors')
 const errMessage = createError.InternalServerError()
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
 const { checkEmail, addDataRegister } = require('../models/users')
 const commonHelper = require('../helper/common')
-const { generateToken } = require('../helper/auth')
+const { generateToken, generateRefreshToken } = require('../helper/auth')
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body
+    const { name, email, password, roleId } = req.body
     const { rowCount } = await checkEmail(email)
     if (rowCount) {
       return next(createError(403, 'User sudah terdaftar'))
@@ -19,7 +20,8 @@ const register = async (req, res, next) => {
       id: uuidv4(),
       name,
       email,
-      password: hashPassword
+      password: hashPassword,
+      roleId: roleId || 'user'
     }
     await addDataRegister(dataRegister)
     commonHelper.response(res, dataRegister, 201, 'User berhasil ditambahkan')
@@ -41,13 +43,14 @@ const login = async (req, res, next) => {
       return commonHelper.response(res, null, 403, 'email atau password anda salah')
     }
     delete user.password
-
+    console.log(user.role_id)
     const payload = {
       email: user.email,
-      role: user.role || user
+      role: user.role_id
     }
 
     user.token = generateToken(payload)
+    user.refreshToken = generateRefreshToken(payload)
     commonHelper.response(res, user, 201, 'Anda berhasil Login')
   } catch (error) {
     console.log(error)
@@ -65,6 +68,11 @@ const profile = async (req, res, next) => {
     console.log(error)
     next(errMessage)
   }
+}
+
+const refreshToken = (req, res, next) => {
+  const refreshToken = req.body.refreshToken
+  const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN)
 }
 
 module.exports = { register, login, profile }
