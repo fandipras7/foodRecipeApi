@@ -2,8 +2,9 @@ const pool = require('../config/db')
 
 const modelsProduct = {
   select: (limit, offset) => {
+    // 'SELECT products.*, category.name AS name_category FROM products JOIN category ON products.id_category = category.id LIMIT $1 OFFSET $2'
     return new Promise((resolve, reject) => {
-      pool.query('SELECT products.*, category.name AS name_category FROM products JOIN category ON products.id_category = category.id LIMIT $1 OFFSET $2', [limit, offset], (err, result) => {
+      pool.query('SELECT * FROM products LIMIT $1 OFFSET $2', [limit, offset], (err, result) => {
         if (!err) {
           resolve(result.rows)
         } else {
@@ -11,6 +12,9 @@ const modelsProduct = {
         }
       })
     })
+  },
+  selectById: (id) => {
+    return pool.query('SELECT products.*, category.name AS name_category FROM products JOIN category ON products.id_category = category.id WHERE products.id = $1', [id])
   },
   insert: ({ name, brand, size, color, condition, stock, price, idCategory }) => {
     return pool.query('INSERT INTO products(name, brand, size, color, condition, stock, price, id_category)VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [name, brand, size, color, condition, stock, price, idCategory])

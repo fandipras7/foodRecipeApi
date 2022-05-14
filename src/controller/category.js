@@ -1,4 +1,5 @@
 const createError = require('http-errors')
+const { response } = require('../helper/common')
 const categoryModels = require('../models/category')
 const errorMessage = new createError.InternalServerError()
 
@@ -6,11 +7,13 @@ const categoryController = {
   getData: (req, res, next) => {
     categoryModels.selectCategory()
       .then((result) => {
-        res.json({
-          data: result
-        })
+        // res.json({
+        //   data: result
+        // })
+        response(res, result, 200, 'Berhasil mendapatkan produk')
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         next(errorMessage)
       })
   },
@@ -19,9 +22,7 @@ const categoryController = {
     const data = name
     categoryModels.insertCategory(data)
       .then(() => {
-        res.json({
-          message: 'Data berhasil ditambahkan'
-        })
+        response(res, data, 201, 'Berhasil menambahkan produk')
       })
       .catch(() => {
         next(errorMessage)
@@ -38,10 +39,7 @@ const categoryController = {
       .then((result) => {
         console.log(result)
         if (result.rowCount) {
-          res.json({
-            data,
-            message: 'data diatas berhasil di update'
-          })
+          response(res, data, 200, 'Category berhasil di update')
         } else {
           next(new Error('id tidak ditemukan tidak ada data yang dihapus'))
         }
@@ -56,9 +54,7 @@ const categoryController = {
     categoryModels.deleteCategory(id)
       .then((result) => {
         if (result.rowCount) {
-          res.json({
-            message: 'Data berhasil dihapus'
-          })
+          response(res, null, 200, `produk dengan id ${id} berhasil di hapus`)
         } else {
           next(new Error('id tidak ditemukan tidak ada data yang dihapus'))
         }
