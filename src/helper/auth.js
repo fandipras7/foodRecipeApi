@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const generateToken = (payload) => {
-  const verivyOption = { 
-    expiresIn: 120,
+  const verivyOption = {
+    expiresIn: 60
     // issuer: 'tokoku'
   }
   const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, verivyOption)

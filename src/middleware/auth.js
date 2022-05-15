@@ -9,6 +9,11 @@ const protect = (req, res, next) => {
       console.log(decoded)
       req.user = decoded
       next()
+    } else if (req.params) {
+      token = req.params.token
+      const decoded = jwt.verify(token, 'errrooo')
+      req.user = decoded
+      next()
     } else {
       next(createError(400, 'Server need token'))
     }

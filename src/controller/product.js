@@ -56,14 +56,26 @@ const productsController = {
     }
   },
   addData: (req, res, next) => {
-    console.log(req.file.filename)
+    console.log(req.file)
+    const type = req.file.originalname
+    const sizePhoto = req.file.size
+    let photo
+    if (type.includes('.jpg') || type.includes('.png')) {
+      photo = req.file.filename
+    } else {
+      response(res, null, 400, 'file harus jpg atau png')
+    }
+
+    if (sizePhoto > 2048) {
+      response(res, null, 400, 'Size maksimal 2mb')
+    }
     const { name, brand, size, color, condition, stock, price, idCategory } = req.body
     const data = {
       name,
       brand,
       size,
       color,
-      photo: req.file.filename,
+      photo,
       condition,
       stock,
       price,

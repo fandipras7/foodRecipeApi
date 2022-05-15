@@ -23,4 +23,16 @@ const addDataRegister = ({ id, name, email, password, roleId }) => {
   })
 }
 
-module.exports = { checkEmail, addDataRegister }
+const setStatus = (status, email) => {
+  return new Promise((resolve, reject) => {
+    pool.query('UPDATE users SET status = $1 WHERE email = $2', [status, email], (err, result) => {
+      if (!err) {
+        resolve(result)
+      } else {
+        reject(err)
+      }
+    })
+  })
+}
+
+module.exports = { checkEmail, addDataRegister, setStatus }

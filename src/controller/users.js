@@ -3,9 +3,10 @@ const errMessage = createError.InternalServerError()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
-const { checkEmail, addDataRegister } = require('../models/users')
+const { checkEmail, addDataRegister, setStatus } = require('../models/users')
 const commonHelper = require('../helper/common')
 const { generateToken, generateRefreshToken } = require('../helper/auth')
+const { sendEmail } = require('../helper/email')
 
 const register = async (req, res, next) => {
   try {
@@ -24,6 +25,7 @@ const register = async (req, res, next) => {
       roleId: roleId || 'user'
     }
     await addDataRegister(dataRegister)
+    sendEmail(email)
     commonHelper.response(res, dataRegister, 201, 'User berhasil ditambahkan')
   } catch (error) {
     console.log(error)
@@ -73,6 +75,31 @@ const profile = async (req, res, next) => {
 const refreshToken = (req, res, next) => {
   const refreshToken = req.body.refreshToken
   const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN)
+  const payload = {
+    email: decoded.email,
+    role: decoded.role
+  }
+  const result = {
+    token: generateToken(payload),
+    refreshToken: generateRefreshToken(payload)
+  }
+
+  commonHelper.response(res, result, 200)
 }
 
-module.exports = { register, login, profile }
+const activation = async (req, res, next) => {
+  try {
+    const email = req.user.email
+    const status = 'actived'
+    const data = {
+      email,
+      status
+    }
+    await setStatus(status, email)
+    commonHelper.response(res, data, 201, 'Congratulation Your Account Is Actived')
+  } catch (error) {
+    next(errMessage)
+  }
+}
+
+module.exports = { register, login, profile, refreshToken, activation }
