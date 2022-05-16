@@ -16,12 +16,12 @@ const modelsProduct = {
   selectById: (id) => {
     return pool.query('SELECT products.*, category.name AS name_category FROM products JOIN category ON products.id_category = category.id WHERE products.id = $1', [id])
   },
-  insert: ({ name, brand, size, color, condition, stock, price, idCategory }) => {
-    return pool.query('INSERT INTO products(name, brand, size, color, condition, stock, price, id_category)VALUES($1, $2, $3, $4, $5, $6, $7, $8)', [name, brand, size, color, condition, stock, price, idCategory])
+  insert: ({ name, brand, size, color, condition, stock, price, idCategory, photo }) => {
+    return pool.query('INSERT INTO products(name, brand, size, color, condition, stock, price, id_category, photo)VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [name, brand, size, color, condition, stock, price, idCategory, photo])
   },
-  update: ({ name, brand, size, color, condition, description, stock, price, idCategory, id }) => {
+  update: ({ name, brand, size, color, condition, description, stock, price, idCategory, photo, id }) => {
     return pool.query(`UPDATE products SET name = $1, brand = $2, size = $3, color = $4,
-    condition = $5, description = $6, stock = $7, price = $8, id_category = $9 WHERE id = $10`, [name, brand, size, color, condition, description, stock, price, idCategory, id])
+    condition = $5, description = $6, stock = $7, price = $8, id_category = $9, photo = $10 WHERE id = $11`, [name, brand, size, color, condition, description, stock, price, idCategory, photo, id])
   },
   delete: (id) => {
     return pool.query('DELETE FROM products WHERE id = $1', [id])

@@ -6,7 +6,7 @@ const { upload } = require('../middleware/upload')
 router.get('/', productController.getData)
 router.get('/:idProduct', productController.getData)
 router.post('/', upload.single('photo'), productController.addData)
-router.put('/:id', productController.updateData)
+router.put('/:id', upload.single('photo'), productController.updateData)
 router.delete('/:idProduct', productController.deleteData)
 
 module.exports = router

@@ -1,3 +1,4 @@
+const createError = require('http-errors')
 const multer = require('multer')
 
 // const checkImage = (req, res, next) => {
@@ -6,15 +7,38 @@ const multer = require('multer')
 // }
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function (req, files, cb) {
     cb(null, './imgUpload')
+    // cb(null, path.join(__dirname, './imagesUpload'))
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    console.log(file.originalname)
     cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname)
   }
 })
 
-const upload = multer({ storage })
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 2000000
+  },
+  fileFilter: (req, file, cb) => {
+    // const fileSize = 
+    const filetypes = /jpg|png|jpeg/
+    // console.log(filetypes)
+    const extname = filetypes.test(file.originalname)
+    // console.log(extname)
+    const mimetype = filetypes.test(file.mimetype)
+    // console.log(file.mimetype)
+
+    if (mimetype && extname) {
+      return cb(null, true)
+    } else {
+      cb(createError('data harus jpg atau png'))
+    }
+  }
+
+})
 
 module.exports = { upload }

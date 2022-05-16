@@ -56,19 +56,11 @@ const productsController = {
     }
   },
   addData: (req, res, next) => {
-    console.log(req.file)
-    const type = req.file.originalname
-    const sizePhoto = req.file.size
-    let photo
-    if (type.includes('.jpg') || type.includes('.png')) {
-      photo = req.file.filename
-    } else {
-      response(res, null, 400, 'file harus jpg atau png')
-    }
-
-    if (sizePhoto > 2048) {
-      response(res, null, 400, 'Size maksimal 2mb')
-    }
+    console.log(req.files)
+    // const type = req.file.originalname
+    // const sizePhoto = req.file.size
+    const photo = `http://${req.get('host')}/img/${req.file.filename}` || null
+    console.log(photo)
     const { name, brand, size, color, condition, stock, price, idCategory } = req.body
     const data = {
       name,
@@ -82,6 +74,16 @@ const productsController = {
       idCategory
     }
 
+    // if (type.includes('.jpg') || type.includes('.png')) {
+    //   photo = req.file.filename
+    // } else {
+    //   return response(res, null, 400, 'file harus jpg atau png')
+    // }
+
+    // if (sizePhoto > 2000000) {
+    //   return next(createError('Maksimal size 2mb'))
+    // }
+
     modelProducts.insert(data)
       .then(() => {
         response(res, data, 201, 'Produk berhasil ditambahkan')
@@ -94,6 +96,7 @@ const productsController = {
   updateData: async (req, res, next) => {
     try {
       const id = req.params.id
+      const photo = `http://${req.get('host')}/img/${req.file.filename}` || null
       const { name, brand, size, color, condition, description, stock, price, idCategory } = req.body
       const data = {
         name,
@@ -104,12 +107,13 @@ const productsController = {
         description,
         stock,
         price,
+        photo,
         idCategory,
         id
       }
       const result = await modelProducts.update(data)
       if (result.rowCount) {
-        response(res, data, 200, 'Data berhasil di update')
+        response(res, data, 201, 'Data berhasil di update')
       } else {
         next(new Error('Id tidak ditemukan'))
       }
