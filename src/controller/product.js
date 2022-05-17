@@ -47,8 +47,11 @@ const productsController = {
         return response(res, result, 200, 'Data berhasil didaptakan', pagination)
       }
 
+      console.log(req)
       const { rows: [product] } = await modelProducts.selectById(id)
-      console.log(product)
+      if (!product) {
+        return response(res, product, 200, 'Produk tidak ditemukan')
+      }
       response(res, product, 200, 'Berhasil mengambil data')
     } catch (error) {
       console.log(error)

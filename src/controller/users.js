@@ -3,7 +3,7 @@ const errMessage = createError.InternalServerError()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { v4: uuidv4 } = require('uuid')
-const { checkEmail, addDataRegister, setStatus } = require('../models/users')
+const { checkEmail, addDataRegister, setStatus, deleteModelUser, getAllUsers } = require('../models/users')
 const commonHelper = require('../helper/common')
 const { generateToken, generateRefreshToken } = require('../helper/auth')
 const { sendEmail } = require('../helper/email')
@@ -22,9 +22,10 @@ const register = async (req, res, next) => {
       name,
       email,
       password: hashPassword,
-      roleId: roleId || 'user'
+      roleId: roleId || 'Admin'
     }
     await addDataRegister(dataRegister)
+    delete dataRegister.password
     sendEmail(email)
     commonHelper.response(res, dataRegister, 201, 'User berhasil ditambahkan')
   } catch (error) {
@@ -45,18 +46,43 @@ const login = async (req, res, next) => {
       return commonHelper.response(res, null, 403, 'email atau password anda salah')
     }
     delete user.password
-    console.log(user.role_id)
     const payload = {
       email: user.email,
       role: user.role_id
     }
-
+    // const dataUser = {
+    //   name: user.name,
+    //   email: user.email,
+    //   role: user.role_id
+    // }
     user.token = generateToken(payload)
     user.refreshToken = generateRefreshToken(payload)
     commonHelper.response(res, user, 201, 'Anda berhasil Login')
   } catch (error) {
     console.log(error)
     next(new createError.InternalServerError())
+  }
+}
+
+const deleteUser = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    console.log(id)
+    await deleteModelUser(id)
+    commonHelper.response(res, id, 200, 'User dengan id diatas berhasl dihapus')
+  } catch (error) {
+    console.log(error)
+    next(errMessage)
+  }
+}
+
+const searchUser = async (req, res, next) => {
+  try {
+    const { rows: [...users] } = await getAllUsers()
+    commonHelper.response(res, users, 200, 'Berhasil mengambil data users')
+  } catch (error) {
+    console.log(error)
+    next(errMessage)
   }
 }
 
@@ -102,4 +128,12 @@ const activation = async (req, res, next) => {
   }
 }
 
-module.exports = { register, login, profile, refreshToken, activation }
+module.exports = {
+  register,
+  login,
+  profile,
+  refreshToken,
+  activation,
+  deleteUser,
+  searchUser
+}

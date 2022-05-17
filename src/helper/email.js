@@ -13,7 +13,7 @@ const sendEmail = async (email) => {
     })
 
     const token = jwt.sign({ email }, 'errrooo', {
-      expiresIn: 14
+      expiresIn: '24h'
     }
     )
 

@@ -3,7 +3,11 @@ const pool = require('../config/db')
 const orderDetails = {
   select: () => {
     return new Promise((resolve, reject) => {
-      return pool.query('SELECT order_details.id, total, provider, users.name FROM order_details INNER JOIN users on order_details.users_id = users.id INNER JOIN payment on order_details.payment_id = payment.id', (err, result) => {
+      return pool.query(`SELECT order_details.id, total, provider, users.name, order_items.product_id, products.name FROM order_details 
+      INNER JOIN users on order_details.users_id = users.id 
+      INNER JOIN payment on order_details.payment_id = payment.id
+      INNER JOIN order_items on order_details.id = order_items.order_id
+      INNER JOIN products on order_items.product_id = products.id;`, (err, result) => {
         if (!err) {
           resolve(result)
         } else {

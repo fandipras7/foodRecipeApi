@@ -3,8 +3,10 @@ CREATE TABLE users(
     name VARCHAR(32),
     email VARCHAR(64) NOT NULL,
     password VARCHAR(64) NOT NULL,
-    role VARCHAR (32),
+    role_id VARCHAR(32),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY(id)
 );
+
+ALTER TABLE users ADD COLUMN status VARCHAR(32);

@@ -35,4 +35,34 @@ const setStatus = (status, email) => {
   })
 }
 
-module.exports = { checkEmail, addDataRegister, setStatus }
+const deleteModelUser = (id) => {
+  return new Promise((resolve, reject) => {
+    return pool.query('DELETE FROM users WHERE id = $1', [id], (err, result) => {
+      if (!err) {
+        resolve(result)
+      } else {
+        reject(err)
+      }
+    })
+  })
+}
+
+const getAllUsers = () => {
+  return new Promise((resolve, reject) => {
+    return pool.query('SELECT * FROM users', (err, result) => {
+      if (!err) {
+        resolve(result)
+      } else {
+        reject(err)
+      }
+    })
+  })
+}
+
+module.exports = {
+  checkEmail,
+  addDataRegister,
+  setStatus,
+  deleteModelUser,
+  getAllUsers
+}
