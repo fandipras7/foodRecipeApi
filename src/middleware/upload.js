@@ -23,13 +23,13 @@ const upload = multer({
   limits: {
     fileSize: 2 * 1024 * 1024
   },
-  fileFilter: (req, files, cb) => {
-    console.log(files)
+  fileFilter: (req, file, cb) => {
+    console.log(file)
     const filetypes = /jpg|png|jpeg/
     // console.log(filetypes)
-    const extname = filetypes.test(files.originalname)
+    const extname = filetypes.test(file.originalname)
     // console.log(extname)
-    const mimetype = filetypes.test(files.mimetype)
+    const mimetype = filetypes.test(file.mimetype)
     // console.log(file.mimetype)
 
     if (mimetype && extname) {
