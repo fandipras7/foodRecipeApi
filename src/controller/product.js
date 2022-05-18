@@ -50,10 +50,7 @@ const productsController = {
 
       const { rows: [product] } = await modelProducts.selectById(id)
       client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
-      if (!product) {
-        return response(res, product, 200, 'Produk tidak ditemukan')
-      }
-      response(res, product, 200, 'Berhasil mengambil data')
+      response(res, product, 200, 'Berhasil mengambil data dari database')
     } catch (error) {
       console.log(error)
       next(errorMessage)
@@ -100,7 +97,7 @@ const productsController = {
   updateData: async (req, res, next) => {
     try {
       const id = req.params.id
-      const photo = `http://${req.get('host')}/img/${req.file.filename}` || null
+      const photo = `http://${req.get('host')}/img/${req.files.filename}` || null
       const { name, brand, size, color, condition, description, stock, price, idCategory } = req.body
       const data = {
         name,

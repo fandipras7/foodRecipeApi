@@ -7,15 +7,15 @@ const multer = require('multer')
 // }
 
 const storage = multer.diskStorage({
-  destination: function (req, files, cb) {
+  destination: function (req, file, cb) {
     cb(null, './imgUpload')
     // cb(null, path.join(__dirname, './imagesUpload'))
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    console.log(file.originalname)
-    cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname)
+    cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname )
   }
+
 })
 
 const upload = multer({
@@ -23,13 +23,13 @@ const upload = multer({
   limits: {
     fileSize: 2 * 1024 * 1024
   },
-  fileFilter: (req, file, cb) => {
-    // const fileSize = 
+  fileFilter: (req, files, cb) => {
+    console.log(files)
     const filetypes = /jpg|png|jpeg/
     // console.log(filetypes)
-    const extname = filetypes.test(file.originalname)
+    const extname = filetypes.test(files.originalname)
     // console.log(extname)
-    const mimetype = filetypes.test(file.mimetype)
+    const mimetype = filetypes.test(files.mimetype)
     // console.log(file.mimetype)
 
     if (mimetype && extname) {
