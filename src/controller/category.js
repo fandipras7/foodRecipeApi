@@ -24,7 +24,8 @@ const categoryController = {
       .then(() => {
         response(res, data, 201, 'Berhasil menambahkan produk')
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         next(errorMessage)
       })
   },

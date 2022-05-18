@@ -3,7 +3,7 @@ const modelProducts = require('../models/product')
 const { response } = require('../helper/common')
 const modelsProduct = require('../models/product')
 const errorMessage = new createError.InternalServerError()
-const client = require('../config/redis')
+// const client = require('../config/redis')
 
 const productsController = {
   getData: async (req, res, next) => {
@@ -49,7 +49,7 @@ const productsController = {
       }
 
       const { rows: [product] } = await modelProducts.selectById(id)
-      client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
+      // client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
       response(res, product, 200, 'Berhasil mengambil data dari database')
     } catch (error) {
       console.log(error)
