@@ -20,6 +20,7 @@ const categoryController = {
   addData: (req, res, next) => {
     const { name } = req.body
     const data = name
+    console.log(data)
     categoryModels.insertCategory(data)
       .then(() => {
         response(res, data, 201, 'Berhasil menambahkan produk')
@@ -45,7 +46,8 @@ const categoryController = {
           next(new Error('id tidak ditemukan tidak ada data yang dihapus'))
         }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error)
         next(errorMessage)
       })
   },
