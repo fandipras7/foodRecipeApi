@@ -9,7 +9,6 @@ Express Js as a framework of Node.js and Postgre SQL as a database which has
 -   [Prerequisites](#prerequisites)
 -   [Installation](#installation)
 -   [Features](#features)
--   [Examples](#examples)
 -   [Built wtih](#features)
 -   [Author](#author)
 ## Prerequisites
