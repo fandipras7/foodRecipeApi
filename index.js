@@ -29,6 +29,9 @@ app.use((err, req, res, next) => {
   if (err.message === 'File too large') {
     messError = 'Maximale size 2 mb'
   }
+  if (err.message === 'Cannot read property \'filename\' of undefined') {
+    console.log(err)
+  }
   const statusCode = err.status || 500
   res.status(statusCode).json({
     message: messError
