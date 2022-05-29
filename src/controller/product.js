@@ -59,20 +59,21 @@ const productsController = {
   addData: (req, res, next) => {
     // const type = req.file.originalname
     // const sizePhoto = req.file.size
-    const photo = `http://${req.get('host')}/img/${req.file.filename}` || null
-    console.log(photo)
+    console.log('apakah ini jalan')
+    // req.file
+    // const photo = `http://${req.get('host')}/img/${req.file.filename}` || null
     const { name, brand, size, color, condition, stock, price, idCategory } = req.body
     console.log(name)
     const data = {
       name,
-      brand,
-      size,
-      color,
-      photo,
+      brand: brand || '',
+      size: size || '',
+      color: color || '',
+      photo: null,
       condition,
       stock,
       price,
-      idCategory
+      idCategory: idCategory || 2
     }
 
     // if (type.includes('.jpg') || type.includes('.png')) {
