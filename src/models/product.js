@@ -16,8 +16,8 @@ const modelsProduct = {
   selectById: (id) => {
     return pool.query('SELECT products.*, category.name AS name_category FROM products JOIN category ON products.id_category = category.id WHERE products.id = $1', [id])
   },
-  insert: ({ name, brand, size, color, condition, stock, price, idCategory, photo }) => {
-    return pool.query('INSERT INTO products(name, brand, size, color, condition, stock, price, id_category, photo)VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)', [name, brand, size, color, condition, stock, price, idCategory, photo])
+  insert: ({ name, brand, size, color, condition, stock, price, idCategory, photo, description }) => {
+    return pool.query('INSERT INTO products(name, brand, size, color, condition, stock, price, id_category, photo, description)VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)', [name, brand, size, color, condition, stock, price, idCategory, photo, description])
   },
   update: ({ name, brand, size, color, condition, description, stock, price, idCategory, photo, id }) => {
     return pool.query(`UPDATE products SET name = $1, brand = $2, size = $3, color = $4,

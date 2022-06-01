@@ -3,10 +3,11 @@ const modelProducts = require('../models/product')
 const { response } = require('../helper/common')
 const modelsProduct = require('../models/product')
 const errorMessage = new createError.InternalServerError()
-const client = require('../config/redis')
+// const client = require('../config/redis')
 
 const productsController = {
   getData: async (req, res, next) => {
+    console.log('apakah ini jalan2')
     const id = req.params.idProduct
     try {
       if (!id) {
@@ -48,8 +49,10 @@ const productsController = {
         return response(res, result, 200, 'Data dari database berhasil didaptakan', pagination)
       }
 
+      console.log('apakah ini jalan')
+
       const { rows: [product] } = await modelProducts.selectById(id)
-      client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
+      // client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
       response(res, product, 200, 'Berhasil mengambil data dari database')
     } catch (error) {
       console.log(error)
@@ -62,7 +65,7 @@ const productsController = {
     console.log('apakah ini jalan')
     // req.file
     // const photo = `http://${req.get('host')}/img/${req.file.filename}` || null
-    const { name, brand, size, color, condition, stock, price, idCategory } = req.body
+    const { name, brand, size, color, condition, stock, price, idCategory, description } = req.body
     console.log(name)
     const data = {
       name,
@@ -70,6 +73,7 @@ const productsController = {
       size: size || '',
       color: color || '',
       photo: null,
+      description: description || '',
       condition,
       stock,
       price,
@@ -98,19 +102,19 @@ const productsController = {
   updateData: async (req, res, next) => {
     try {
       const id = req.params.id
-      const photo = `http://${req.get('host')}/img/${req.files.filename}` || null
+      // const photo = `http://${req.get('host')}/img/${req.files.filename}` || null
       const { name, brand, size, color, condition, description, stock, price, idCategory } = req.body
       const data = {
         name,
-        brand,
-        size,
-        color,
+        brand: brand || '',
+        size: size || '',
+        color: color || '',
         condition,
         description,
         stock,
         price,
-        photo,
-        idCategory,
+        photo: null,
+        idCategory: idCategory || 3,
         id
       }
       const result = await modelProducts.update(data)
