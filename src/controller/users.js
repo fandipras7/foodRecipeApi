@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require('uuid')
 const { checkEmail, addDataRegister, setStatus, deleteModelUser, getAllUsers } = require('../models/users')
 const commonHelper = require('../helper/common')
 const { generateToken, generateRefreshToken } = require('../helper/auth')
-const { sendEmail } = require('../helper/email')
+// const { sendEmail } = require('../helper/email')
 
 const register = async (req, res, next) => {
   try {
@@ -26,7 +26,7 @@ const register = async (req, res, next) => {
     }
     await addDataRegister(dataRegister)
     delete dataRegister.password
-    sendEmail(email)
+    // sendEmail(email)
     commonHelper.response(res, dataRegister, 201, 'User berhasil ditambahkan')
   } catch (error) {
     console.log(error)
@@ -37,7 +37,9 @@ const register = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body
-    const { rows: [user] } = await checkEmail(email)
+    const {
+      rows: [user]
+    } = await checkEmail(email)
     if (!user) {
       return commonHelper.response(res, null, 403, 'email atau password anda salah')
     }
@@ -78,7 +80,9 @@ const deleteUser = async (req, res, next) => {
 
 const searchUser = async (req, res, next) => {
   try {
-    const { rows: [...users] } = await getAllUsers()
+    const {
+      rows: [...users]
+    } = await getAllUsers()
     commonHelper.response(res, users, 200, 'Berhasil mengambil data users')
   } catch (error) {
     console.log(error)
@@ -89,7 +93,9 @@ const searchUser = async (req, res, next) => {
 const profile = async (req, res, next) => {
   try {
     const email = req.user.email
-    const { rows: [user] } = await checkEmail(email)
+    const {
+      rows: [user]
+    } = await checkEmail(email)
     delete user.password
     commonHelper.response(res, user, 200, 'Berhasil mengambil data')
   } catch (error) {
