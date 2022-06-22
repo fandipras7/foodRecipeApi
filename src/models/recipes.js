@@ -13,8 +13,8 @@ const modelRecipes = {
     })
   },
 
-  insertData: ({ id, title, image, ingredients, video, idUser }) => {
-    return pool.query('INSERT INTO recipes (id, title, image, ingredients, video, id_user)VALUES($1,$2,$3,$4,$5,$6)', [id, title, image, ingredients, video, idUser])
+  insertData: ({ title, image, ingredients, video, idUser }) => {
+    return pool.query('INSERT INTO recipes ( title, image, ingredients, video, id_user)VALUES($1,$2,$3,$4,$5)', [title, image, ingredients, video, idUser])
   },
 
   updateData: ({title, image, ingredients, video, idUser, id}) => {
@@ -23,6 +23,10 @@ const modelRecipes = {
 
   removeData: (id)=>{
     return pool.query('DELETE FROM recipes WHERE id = $1', [id])
+  },
+
+  selectById: (id) => {
+    return pool.query('SELECT*FROM recipes WHERE id = $1', [id])
   },
 
   countRecipes: () => {

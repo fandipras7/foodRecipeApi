@@ -5,7 +5,7 @@ const errorMessage = new createError.InternalServerError()
 
 const recipesController = {
   getData: async (req, res, next) => {
-    const id = req.params.idProduct
+    const id = req.params.idRecipe
     try {
       if (!id) {
         // const query = req.query.search
@@ -31,6 +31,10 @@ const recipesController = {
 
         return response(res, result, 200, 'GET DATA FROM DATABASE', pagination)
       }
+
+      const { rows: [recipe] } = await modelRecipes.selectById(id)
+      // client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
+      response(res, recipe, 200, 'Berhasil mengambil data dari database')
     } catch (error) {
       console.log(error)
       next(errorMessage)
@@ -38,12 +42,12 @@ const recipesController = {
   },
 
   addData: (req, res, next) => {
-    const image = `http://${req.get('host')}/img/${req.file.filename}` || null
-    const { id, title, ingredients, video } = req.body
+    const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
+    const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
+    const { title, ingredients } = req.body
     console.log(req.body)
 
     const data = {
-      id,
       title,
       image,
       ingredients,
@@ -66,8 +70,9 @@ const recipesController = {
   updateData: async (req, res, next) => {
     try {
       const idRecipes = req.params.id
-      const image = `http://${req.get('host')}/img/${req.file.filename}` || null
-      const { title, ingredients, video } = req.body
+      const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
+      const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
+      const { title, ingredients } = req.body
       const data = {
         id: idRecipes,
         title,

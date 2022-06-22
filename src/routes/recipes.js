@@ -4,8 +4,9 @@ const recipesController = require('../controller/recipes')
 const { upload } = require('../middleware/upload')
 
 router.get('/', recipesController.getData)
-router.post('/', upload.single('image'), recipesController.addData)
-router.put('/:id', upload.single('image'), recipesController.updateData)
+router.get('/:idRecipe', recipesController.getData)
+router.post('/', upload, recipesController.addData)
+router.put('/:id', upload, recipesController.updateData)
 router.delete('/:id', recipesController.deleteData)
 
 module.exports = router

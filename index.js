@@ -23,6 +23,7 @@ app.use(
 app.use('/v1', mainRoute)
 
 app.use('/img', express.static(path.join(__dirname, '/imgUpload')))
+app.use('/video', express.static(path.join(__dirname, '/video')))
 app.all('*', (req, res, next) => {
   next(new createError.NotFound())
 })

@@ -7,12 +7,15 @@ const multer = require('multer')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './imgUpload')
-    // cb(null, path.join(__dirname, './imagesUpload'))
+    if (file.fieldname === 'image') {
+      cb(null, './imgUpload')
+    } else {
+      cb(null, './video')
+    }
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix + '-' + file.originalname)
+    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.')[1])
   }
 
 })
@@ -20,11 +23,11 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 2 * 1024 * 1024
+    fileSize: 200 * 1024 * 1024
   },
   fileFilter: (req, file, cb) => {
     // console.log(file.fi)
-    const filetypes = /jpg|png|jpeg/
+    const filetypes = /jpg|png|jpeg|mp4/
     // console.log(filetypes)
     const extname = filetypes.test(file.originalname)
     // console.log(extname)
@@ -34,10 +37,10 @@ const upload = multer({
     if (mimetype && extname) {
       return cb(null, true)
     } else {
-      cb(createError('data harus jpg atau png'))
+      cb(createError('data harus jpg atau png atau video'))
     }
   }
 
-})
+}).fields([{ name: 'image', maxCount: 1 }, { name: 'video', maxCount: 1 }])
 
 module.exports = { upload }

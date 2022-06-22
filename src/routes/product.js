@@ -7,8 +7,8 @@ const { protect, isAdmin } = require('../middleware/auth')
 
 router.get('/', /* protect , */ productController.getData)
 router.get('/:idProduct', /* protect,  hitCacheProductDetail, */ productController.getData)
-router.post('/', /* protect, isAdmin, */upload.single('photo'), productController.addData)
-router.put('/:id', /* protect */ upload.array('photo', 4), productController.updateData)
+router.post('/', /* protect, isAdmin, upload.single('photo'), */ productController.addData)
+router.put('/:id', /* protect  upload.array('photo', 4), */ productController.updateData)
 router.delete('/:idProduct', /* protect, clearCacheProductDetail, */ productController.deleteData)
 
 module.exports = router
