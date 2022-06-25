@@ -13,6 +13,10 @@ const modelRecipes = {
     })
   },
 
+  selectMyRecipe: (id) =>{
+    return pool.query('SELECT * FROM recipes WHERE recipes.id_user = $1', [id])
+  },
+
   insertData: ({ title, image, ingredients, video, idUser }) => {
     return pool.query('INSERT INTO recipes ( title, image, ingredients, video, id_user)VALUES($1,$2,$3,$4,$5)', [title, image, ingredients, video, idUser])
   },

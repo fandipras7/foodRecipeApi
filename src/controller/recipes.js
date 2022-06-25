@@ -6,6 +6,7 @@ const errorMessage = new createError.InternalServerError()
 const recipesController = {
   getData: async (req, res, next) => {
     const id = req.params.idRecipe
+    console.log('apakah jalan')
     try {
       if (!id) {
         // const query = req.query.search
@@ -41,7 +42,20 @@ const recipesController = {
     }
   },
 
+  getMyRecipe: async (req, res, next) => {
+    try {
+      const id = req.user.id
+      const { rows } = await modelRecipes.selectMyRecipe(id)
+      const myrecipe = rows
+      response(res, myrecipe, 200, 'Berhasil mengambil data dari database')
+    } catch (error) {
+      console.log(error)
+      next(errorMessage)
+    }
+  },
+
   addData: (req, res, next) => {
+    const idUser = req.user.id
     const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
     const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
     const { title, ingredients } = req.body
@@ -52,7 +66,7 @@ const recipesController = {
       image,
       ingredients,
       video,
-      idUser: 'first_user'
+      idUser
     }
 
     console.log(data)
@@ -69,7 +83,9 @@ const recipesController = {
 
   updateData: async (req, res, next) => {
     try {
+      const idUser = req.user.id
       const idRecipes = req.params.id
+      console.log('apakah ini jalan')
       const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
       const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
       const { title, ingredients } = req.body
@@ -79,7 +95,7 @@ const recipesController = {
         image,
         ingredients,
         video,
-        idUser: 'first_user'
+        idUser
       }
 
       const result = await modelRecipes.updateData(data)
@@ -101,7 +117,7 @@ const recipesController = {
         response(res, null, 200, 'Data berhasil di hapus')
       })
       .catch((error) => {
-        console.log(error);
+        console.log(error)
         next(errorMessage)
       })
   }

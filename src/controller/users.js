@@ -10,7 +10,7 @@ const { generateToken, generateRefreshToken } = require('../helper/auth')
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, roleId } = req.body
+    const { name, email, phoneNumber, password, roleId } = req.body
     const { rowCount } = await checkEmail(email)
     if (rowCount) {
       return next(createError(403, 'User sudah terdaftar'))
@@ -22,7 +22,8 @@ const register = async (req, res, next) => {
       name,
       email,
       password: hashPassword,
-      roleId: roleId || 'Admin'
+      phoneNumber,
+      roleId: roleId || 'User'
     }
     await addDataRegister(dataRegister)
     delete dataRegister.password
@@ -50,7 +51,8 @@ const login = async (req, res, next) => {
     delete user.password
     const payload = {
       email: user.email,
-      role: user.role_id
+      role: user.role_id,
+      id: user.id
     }
     // const dataUser = {
     //   name: user.name,
