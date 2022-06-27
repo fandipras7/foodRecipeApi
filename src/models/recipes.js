@@ -13,7 +13,7 @@ const modelRecipes = {
     })
   },
 
-  selectMyRecipe: (id) =>{
+  selectMyRecipe: (id) => {
     return pool.query('SELECT * FROM recipes WHERE recipes.id_user = $1', [id])
   },
 
@@ -21,11 +21,11 @@ const modelRecipes = {
     return pool.query('INSERT INTO recipes ( title, image, ingredients, video, id_user)VALUES($1,$2,$3,$4,$5)', [title, image, ingredients, video, idUser])
   },
 
-  updateData: ({title, image, ingredients, video, idUser, id}) => {
+  updateData: ({ title, image, ingredients, video, idUser, id }) => {
     return pool.query('UPDATE recipes SET title = $1, image = $2, ingredients = $3, video = $4, id_user = $5 WHERE id = $6', [title, image, ingredients, video, idUser, id])
   },
 
-  removeData: (id)=>{
+  removeData: (id) => {
     return pool.query('DELETE FROM recipes WHERE id = $1', [id])
   },
 
@@ -35,6 +35,14 @@ const modelRecipes = {
 
   countRecipes: () => {
     return pool.query('SELECT COUNT(*) AS total from recipes')
+  },
+
+  searchRecipes: (key, limit, offset) => {
+    return pool.query('SELECT * FROM recipes WHERE title ILIKE $1 LIMIT $2 OFFSET $3', [`%${key}%`, limit, offset])
+  },
+
+  sortRecipes: (sortby, sort, limit, offset) => {
+    return pool.query(`SELECT * FROM recipes ORDER BY ${sortby} ${sort} LIMIT $1 OFFSET $2`, [limit, offset])
   }
 }
 

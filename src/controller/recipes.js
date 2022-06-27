@@ -9,14 +9,22 @@ const recipesController = {
     console.log('apakah jalan')
     try {
       if (!id) {
-        // const query = req.query.search
-        // const sortby = req.query.sortby
-        // const sort = req.query.sort
+        const search = req.query.search
+        const sortby = req.query.sortby
+        const sort = req.query.sort
         const page = parseInt(req.query.page) || 1
         const limit = parseInt(req.query.limit) || 10
         const offset = (page - 1) * limit
-        const result = await modelRecipes.select(limit, offset)
+        let result = await modelRecipes.select(limit, offset)
+        if (search) {
+          const { rows } = await modelRecipes.searchRecipes(search, limit, offset)
+          result = [...rows]
+        }
 
+        if (sortby && sort) {
+          const { rows } = await modelRecipes.sortRecipes(sortby, sort, limit, offset)
+          result = [...rows]
+        }
         // pagination
         // const {rows: [count]} = await modelRecipes.countProduct()
         const { rows: [count] } = await modelRecipes.countRecipes()
