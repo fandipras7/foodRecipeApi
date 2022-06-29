@@ -2,6 +2,13 @@ const createError = require('http-errors')
 const { response } = require('../helper/common')
 const modelRecipes = require('../models/recipes')
 const errorMessage = new createError.InternalServerError()
+const cloudinary = require('cloudinary').v2
+
+cloudinary.config({
+  cloud_name: 'dbpfwb5ok',
+  api_key: '117781545328253',
+  api_secret: '1nAdMge0mf1KjuDwJi8CWPWpHx8'
+})
 
 const recipesController = {
   getData: async (req, res, next) => {
@@ -53,6 +60,7 @@ const recipesController = {
   getMyRecipe: async (req, res, next) => {
     try {
       const id = req.user.id
+      console.log(id)
       const { rows } = await modelRecipes.selectMyRecipe(id)
       const myrecipe = rows
       response(res, myrecipe, 200, 'Berhasil mengambil data dari database')
@@ -62,31 +70,39 @@ const recipesController = {
     }
   },
 
-  addData: (req, res, next) => {
-    const idUser = req.user.id
-    const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
-    const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
-    const { title, ingredients } = req.body
-    console.log(req.body)
+  addData: async (req, res, next) => {
+    try {
+      const idUser = req.user.id
+      const [imageFile] = req.files.image
+      const [videoFile] = req.files.video
+      const image = await cloudinary.uploader.upload(imageFile.path, { folder: 'recipe/images' })
+      const video = await cloudinary.uploader.upload(videoFile.path, { folder: 'recipe/videos', resource_type: 'video' })
+      // const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
+      // const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
+      const { title, ingredients } = req.body
+      console.log(req.body)
 
-    const data = {
-      title,
-      image,
-      ingredients,
-      video,
-      idUser
+      const data = {
+        title,
+        image: image.secure_url,
+        ingredients,
+        video: video.secure_url,
+        idUser
+      }
+
+      console.log(data)
+
+      modelRecipes.insertData(data)
+        .then(() => {
+          response(res, data, 201, 'Produk berhasil ditambahkan')
+        })
+        .catch((error) => {
+          console.log(error)
+          next(errorMessage)
+        })
+    } catch (error) {
+      console.log(error)
     }
-
-    console.log(data)
-
-    modelRecipes.insertData(data)
-      .then(() => {
-        response(res, data, 201, 'Produk berhasil ditambahkan')
-      })
-      .catch((error) => {
-        console.log(error)
-        next(errorMessage)
-      })
   },
 
   updateData: async (req, res, next) => {
@@ -94,15 +110,19 @@ const recipesController = {
       const idUser = req.user.id
       const idRecipes = req.params.id
       console.log('apakah ini jalan')
-      const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
-      const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
+      const [imageFile] = req.files.image
+      const [videoFile] = req.files.video
+      const image = await cloudinary.uploader.upload(imageFile.path, { folder: 'recipe/images' })
+      const video = await cloudinary.uploader.upload(videoFile.path, { folder: 'recipe/videos', resource_type: 'video' })
+      // const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
+      // const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
       const { title, ingredients } = req.body
       const data = {
         id: idRecipes,
         title,
-        image,
+        image: image.secure_url,
         ingredients,
-        video,
+        video: video.secure_url,
         idUser
       }
 

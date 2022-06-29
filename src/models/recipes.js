@@ -14,7 +14,8 @@ const modelRecipes = {
   },
 
   selectMyRecipe: (id) => {
-    return pool.query('SELECT * FROM recipes WHERE recipes.id_user = $1', [id])
+    // return pool.query('SELECT * FROM recipes WHERE recipes.id_user = $1', [id])
+    return pool.query('SELECT recipes.*, users.name FROM recipes INNER JOIN users on recipes.id_user = users.id WHERE recipes.id_user = $1', [id])
   },
 
   insertData: ({ title, image, ingredients, video, idUser }) => {

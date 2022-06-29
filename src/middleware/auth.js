@@ -7,6 +7,7 @@ const protect = (req, res, next) => {
     //   token = req.headers.authorization.split(' ')[1]
     token = req.cookies.token
     if (!token) {
+      console.log('apakah ini jalan');
       return next(createError(400, 'server need token'))
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)

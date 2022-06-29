@@ -14,4 +14,4 @@ INSERT INTO recipes ( title, ingredients, id_user)VALUES('Kupat Tahu', 'bawang 3
 
 INSERT INTO recipes (id, title, ingredients, id_user)VALUES('second_recipes', 'Mie Pedas', 'Indomie, cabai 10 biji, bon cabai', 'first_user');
 
-SELECT recipes.*, users.name FROM recipes INNER JOIN users on recipes.id_user = users.id;
+SELECT recipes.*, users.name FROM recipes INNER JOIN users on recipes.id_user = users.id WHERE recipes.id_user = $1;
