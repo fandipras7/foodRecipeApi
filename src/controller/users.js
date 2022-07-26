@@ -61,14 +61,14 @@ const login = async (req, res, next) => {
     // }
     user.token = generateToken(payload)
     user.refreshToken = generateRefreshToken(payload)
-    res.cookie('token', user.token, {
-      httpOnly: true,
-      maxAge: 60 * 1000 * 60 * 12,
-      secure: process.env.NODE_ENV !== 'Development' ? true : false,
-      path: '/',
-      sameSite: 'strict'
+    // res.cookie('token', user.token, {
+    //   httpOnly: true,
+    //   maxAge: 60 * 1000 * 60 * 12,
+    //   secure: process.env.NODE_ENV !== 'Development' ? true : false,
+    //   path: '/',
+    //   sameSite: 'strict'
 
-    })
+    // })
     commonHelper.response(res, user, 201, 'Anda berhasil Login')
   } catch (error) {
     console.log(error)
@@ -79,13 +79,13 @@ const login = async (req, res, next) => {
 const logout = (req, res, next) => {
   try {
     const token = req.user.token
-    res.cookie('token', token, {
-      httpOnly: true,
-      maxAge: 1,
-      secure: process.env.NODE_ENV !== 'Development' ? true : false,
-      path: '/',
-      sameSite: 'strict'
-    })
+    // res.cookie('token', token, {
+    //   httpOnly: true,
+    //   maxAge: 1,
+    //   secure: process.env.NODE_ENV !== 'Development' ? true : false,
+    //   path: '/',
+    //   sameSite: 'strict'
+    // })
     commonHelper.response(res, null, 201, 'Anda berhasil Logout')
   } catch (error) {
     console.log(error)

@@ -2,28 +2,29 @@ const createError = require('http-errors')
 const jwt = require('jsonwebtoken')
 const protect = (req, res, next) => {
   try {
-    let token
-    // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    //   token = req.headers.authorization.split(' ')[1]
-    // eslint-disable-next-line prefer-const
-    token = req.cookies.token
-    if (!token) {
-      console.log('apakah ini jalan')
-      return next(createError(400, 'server need token'))
-    }
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
-    //   console.log(decoded)
-    req.user = decoded
-    next()
-    // } else if (req.params.token && req.method === 'GET') {
-    //   console.log(req)
-    //   token = req.params.token
-    //   const decoded = jwt.verify(token, 'errrooo')
-    //   req.user = decoded
-    //   next()
-    // } else {
-    //   next(createError(400, 'Server need token'))
+    // let token
+    // token = req.cookies.token
+    // if (!token) {
+    //   console.log('apakah ini jalan')
+    //   return next(createError(400, 'server need token'))
     // }
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
+    // //   console.log(decoded)
+    // req.user = decoded
+    // next()
+    let token
+    if (
+      req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1]
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
+      req.user = decoded
+      next()
+    } else {
+      next(createError(400, 'server need token'))
+    }
   } catch (error) {
     console.log(error)
     if (error && error.name === 'JsonWebTokenError') {
