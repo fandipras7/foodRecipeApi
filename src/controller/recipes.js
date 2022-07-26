@@ -2,6 +2,7 @@ const createError = require('http-errors')
 const { response } = require('../helper/common')
 const modelRecipes = require('../models/recipes')
 const errorMessage = new createError.InternalServerError()
+const { v4: uuidv4 } = require('uuid')
 const cloudinary = require('cloudinary').v2
 
 cloudinary.config({
@@ -34,7 +35,9 @@ const recipesController = {
         }
         // pagination
         // const {rows: [count]} = await modelRecipes.countProduct()
-        const { rows: [count] } = await modelRecipes.countRecipes()
+        const {
+          rows: [count]
+        } = await modelRecipes.countRecipes()
         const totalData = parseInt(count.total)
         const totalPage = Math.ceil(totalData / limit)
 
@@ -48,7 +51,9 @@ const recipesController = {
         return response(res, result, 200, 'GET DATA FROM DATABASE', pagination)
       }
 
-      const { rows: [recipe] } = await modelRecipes.selectById(id)
+      const {
+        rows: [recipe]
+      } = await modelRecipes.selectById(id)
       // client.setEx(`produk/${id}`, 60 * 60, JSON.stringify(product))
       response(res, recipe, 200, 'Berhasil mengambil data dari database')
     } catch (error) {
@@ -72,7 +77,7 @@ const recipesController = {
 
   addData: async (req, res, next) => {
     try {
-      console.log('apakah jalan');
+      console.log('apakah jalan')
       const idUser = req.user.id
       const [imageFile] = req.files.image
       const [videoFile] = req.files.video
@@ -84,6 +89,7 @@ const recipesController = {
       console.log(req.body)
 
       const data = {
+        id: uuidv4(),
         title,
         image: image.secure_url,
         ingredients,
@@ -93,7 +99,8 @@ const recipesController = {
 
       console.log(data)
 
-      modelRecipes.insertData(data)
+      modelRecipes
+        .insertData(data)
         .then(() => {
           response(res, data, 201, 'Produk berhasil ditambahkan')
         })
@@ -108,24 +115,31 @@ const recipesController = {
 
   updateData: async (req, res, next) => {
     try {
-      const idUser = req.user.id
       const idRecipes = req.params.id
-      console.log('apakah ini jalan')
-      const [imageFile] = req.files.image
-      const [videoFile] = req.files.video
-      const image = await cloudinary.uploader.upload(imageFile.path, { folder: 'recipe/images' })
-      const video = await cloudinary.uploader.upload(videoFile.path, { folder: 'recipe/videos', resource_type: 'video' })
+      const { title, ingredients } = req.body
+      let data = {}
+
+      if (req.files) {
+        const [imageFile] = req.files.image
+        const [videoFile] = req.files.video
+        const image = await cloudinary.uploader.upload(imageFile.path, { folder: 'recipe/images' })
+        const video = await cloudinary.uploader.upload(videoFile.path, { folder: 'recipe/videos', resource_type: 'video' })
+        data = {
+          id: idRecipes,
+          title,
+          image: image.secure_url,
+          ingredients,
+          video: video.secure_url
+        }
+      } else {
+        data = {
+          id: idRecipes,
+          title,
+          ingredients
+        }
+      }
       // const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
       // const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null
-      const { title, ingredients } = req.body
-      const data = {
-        id: idRecipes,
-        title,
-        image: image.secure_url,
-        ingredients,
-        video: video.secure_url,
-        idUser
-      }
 
       const result = await modelRecipes.updateData(data)
       if (result.rowCount) {
@@ -141,7 +155,8 @@ const recipesController = {
 
   deleteData: (req, res, next) => {
     const id = req.params.id
-    modelRecipes.removeData(id)
+    modelRecipes
+      .removeData(id)
       .then(() => {
         response(res, null, 200, 'Data berhasil di hapus')
       })

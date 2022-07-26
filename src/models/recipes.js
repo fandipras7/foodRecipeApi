@@ -18,12 +18,18 @@ const modelRecipes = {
     return pool.query('SELECT recipes.*, users.name FROM recipes INNER JOIN users on recipes.id_user = users.id WHERE recipes.id_user = $1', [id])
   },
 
-  insertData: ({ title, image, ingredients, video, idUser }) => {
-    return pool.query('INSERT INTO recipes ( title, image, ingredients, video, id_user)VALUES($1,$2,$3,$4,$5)', [title, image, ingredients, video, idUser])
+  insertData: ({id, title, image, ingredients, video, idUser }) => {
+    return pool.query('INSERT INTO recipes (id, title, image, ingredients, video, id_user)VALUES($1,$2,$3,$4,$5,$6)', [id, title, image, ingredients, video, idUser])
   },
 
-  updateData: ({ title, image, ingredients, video, idUser, id }) => {
-    return pool.query('UPDATE recipes SET title = $1, image = $2, ingredients = $3, video = $4, id_user = $5 WHERE id = $6', [title, image, ingredients, video, idUser, id])
+  updateData: ({ title, image, ingredients, video, id }) => {
+    // eslint-disable-next-line quotes
+    return pool.query(`UPDATE recipes SET 
+    title = COALESCE($1, title),
+    image = COALESCE($2, image),
+    ingredients = COALESCE($3, ingredients),
+    video = COALESCE($4, video),
+    WHERE id = $5`, [title, image, ingredients, video, id])
   },
 
   removeData: (id) => {

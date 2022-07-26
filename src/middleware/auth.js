@@ -5,9 +5,10 @@ const protect = (req, res, next) => {
     let token
     // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     //   token = req.headers.authorization.split(' ')[1]
+    // eslint-disable-next-line prefer-const
     token = req.cookies.token
     if (!token) {
-      console.log('apakah ini jalan');
+      console.log('apakah ini jalan')
       return next(createError(400, 'server need token'))
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
