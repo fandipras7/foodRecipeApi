@@ -5,23 +5,23 @@ const multer = require('multer')
 //   next()
 // }
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    if (file.fieldname === 'image') {
-      cb(null, './imgUpload')
-    } else {
-      cb(null, './video')
-    }
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.')[1])
-  }
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     if (file.fieldname === 'image') {
+//       cb(null, './imgUpload')
+//     } else {
+//       cb(null, './video')
+//     }
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+//     cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.')[1])
+//   }
 
-})
+// })
 
 const upload = multer({
-  storage,
+  storage: multer.diskStorage({}),
   limits: {
     fileSize: 200 * 1024 * 1024
   },

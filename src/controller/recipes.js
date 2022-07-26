@@ -72,6 +72,7 @@ const recipesController = {
 
   addData: async (req, res, next) => {
     try {
+      console.log('apakah jalan');
       const idUser = req.user.id
       const [imageFile] = req.files.image
       const [videoFile] = req.files.video

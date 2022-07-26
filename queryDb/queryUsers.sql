@@ -5,7 +5,6 @@ CREATE TABLE users(
     phone_number VARCHAR (32) NOT NULL,
     password VARCHAR(64) NOT NULL,
     role_id VARCHAR(32),
-    status VARCHAR(32),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     PRIMARY KEY(id)
