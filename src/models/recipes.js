@@ -28,7 +28,7 @@ const modelRecipes = {
     title = COALESCE($1, title),
     image = COALESCE($2, image),
     ingredients = COALESCE($3, ingredients),
-    video = COALESCE($4, video),
+    video = COALESCE($4, vide o),
     WHERE id = $5`, [title, image, ingredients, video, id])
   },
 
