@@ -13,7 +13,7 @@ const xss = require('xss-clean')
 const PORT = process.env.PORT || 5000
 app.use(express.json())
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://vercel.com/fandiprasetyopro-gmailcom/food-recipe-app/']
+  origin: ['http://localhost:3000', 'https://food-recipe-app-ten.vercel.app/']
 }))
 app.use(morgan('dev'))
 app.use(cookieParser())
