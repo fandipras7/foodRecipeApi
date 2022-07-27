@@ -13,7 +13,7 @@ const protect = (req, res, next) => {
     // req.user = decoded
     // next()
     let token
-    console.log(req.headers)
+    // console.log(req.headers)
     if (
       req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')

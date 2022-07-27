@@ -118,25 +118,29 @@ const recipesController = {
       const idRecipes = req.params.id
       const { title, ingredients } = req.body
       let data = {}
+      let image = null
+      let video = null
 
-      if (req.files) {
+      console.log(req.files.image)
+      if (req.files.image) {
         const [imageFile] = req.files.image
+        image = await cloudinary.uploader.upload(imageFile.path, { folder: 'recipe/images' })
+        image = image.secure_url
+      }
+      if (req.files.video) {
         const [videoFile] = req.files.video
-        const image = await cloudinary.uploader.upload(imageFile.path, { folder: 'recipe/images' })
-        const video = await cloudinary.uploader.upload(videoFile.path, { folder: 'recipe/videos', resource_type: 'video' })
-        data = {
-          id: idRecipes,
-          title,
-          image: image.secure_url,
-          ingredients,
-          video: video.secure_url
-        }
-      } else {
-        data = {
-          id: idRecipes,
-          title,
-          ingredients
-        }
+        video = await cloudinary.uploader.upload(videoFile.path, { folder: 'recipe/videos', resource_type: 'video' })
+        video = video.secure_url
+      }
+
+      console.log(image)
+      console.log(video)
+      data = {
+        id: idRecipes,
+        title,
+        ingredients,
+        image,
+        video
       }
       // const image = `http://${req.get('host')}/img/${req.files.image[0].filename}` || null
       // const video = `http://${req.get('host')}/video/${req.files.video[0].filename}` || null

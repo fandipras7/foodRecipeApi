@@ -9,6 +9,6 @@ router.get('/:idRecipe', recipesController.getData)
 router.get('/myrecipe', protect, recipesController.getMyRecipe)
 router.post('/', protect, upload, recipesController.addData)
 router.put('/:id', protect, upload, recipesController.updateData)
-router.delete('/:id', recipesController.deleteData)
+router.delete('/:id', protect, recipesController.deleteData)
 
 module.exports = router
