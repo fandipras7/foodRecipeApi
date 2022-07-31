@@ -7,6 +7,7 @@ const likesController = {
   getData: async (req, res, next) => {
     try {
       const id = req.user.id
+      // console.log('apakah jalan');
       const result = await selectLikes(id)
       console.log(result)
       response(res, result, 200, 'Berhasil mengambil data dari database')

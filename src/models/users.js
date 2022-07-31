@@ -35,6 +35,19 @@ const addDataRegister = ({ id, name, email, password, phoneNumber }) => {
 //   })
 // }
 
+const updataUserData = ({ id, name, photo }) => {
+  return new Promise((resolve, reject) => {
+    pool.query('UPDATE users SET name = COALESCE($1, name), photo = COALESCE($2, photo) where id = $3',
+      [name, photo, id], (err, result) => {
+        if (!err) {
+          resolve(result)
+        } else {
+          reject(err)
+        }
+      })
+  })
+}
+
 const deleteModelUser = (id) => {
   return new Promise((resolve, reject) => {
     return pool.query('DELETE FROM users WHERE id = $1', [id], (err, result) => {
@@ -63,6 +76,7 @@ module.exports = {
   checkEmail,
   addDataRegister,
   // setStatus,
+  updataUserData,
   deleteModelUser,
   getAllUsers
 }
