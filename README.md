@@ -89,7 +89,7 @@ git clone https://github.com/fandipras7/foodRecipeApi.git
 ```
 - Go To Folder Repo
 ```
-cd telegram_api
+cd foodRecipeApi
 ```
 - Install Module
 ```
